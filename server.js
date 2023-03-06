@@ -73,7 +73,7 @@ const showEmployees = () => {
 };
 const showRoles = () => {
   db.query(`SELECT * FROM roles`, (err, results) => {
-    console.log("hello world");
+    console.log("hello world2");
     console.table(results);
     startPrompt();
   });
@@ -81,7 +81,7 @@ const showRoles = () => {
 
 const showDepartments = () => {
   db.query(`SELECT * FROM departments`, (err, results) => {
-    console.log("hello world");
+    console.log("hello world3");
     console.table(results);
     startPrompt();
   });
@@ -89,15 +89,80 @@ const showDepartments = () => {
 
 const addEmployee = () => {};
 
-const addRole = () => {};
+const addRole = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "newRole",
+        message: "What role would you like to add?",
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "What is the salary for this role?",
+      },
+    ])
+    .then((response) => {
+      db.query(`SELECT department_name, id FROM departments`, (err, res) => {
+        if (err) throw err;
+        let resCount = 0;
+        let departmentArr = [];
+        for (let i = resCount; i < res.length; i++) {
+          let departmentList = {
+            name: res[i].department_name,
+            value: res[i].id,
+          };
+          resCount++;
+          departmentArr.push(departmentList);
+        }
+        console.log(departmentArr);
+        inquirer
+          .prompt([
+            {
+              type: "list",
+              name: "depList",
+              message: "What department does this role belong to?",
+              choices: departmentArr,
+            },
+          ])
+          .then((depResponse) => {
+            const roleName = response.newRole;
+            const roleSalary = response.salary;
+            const departmentName = depResponse.depList;
+            db.query(
+              `INSERT INTO roles (job_title, salary, department_id) VALUES (${roleName}, ${roleSalary}, ${departmentName});`,
+              (err, res) => {
+                if (err) throw err;
+                startPrompt();
+              }
+            );
+          });
+        // console.log("new role added!");
+      });
+    });
+};
 
 const addDepartment = () => {
-  inquirer.prompt([
-    {
-      type: "input",
-      name: "addDept",
-      message: "What department would you like to add?",
-    },
-  ]);
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "newDepartment",
+        message: "What department would you like to add?",
+      },
+    ])
+    .then((response) => {
+      const departmentName = response.newDepartment;
+      db.query(
+        `INSERT INTO departments (name) VALUES (?)`,
+        departmentName,
+        (err, res) => {
+          if (err) throw err;
+        }
+      );
+      console.log("new department added!");
+      startPrompt();
+    });
 };
 const updateEmployee = () => {};
