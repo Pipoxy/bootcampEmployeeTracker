@@ -253,50 +253,65 @@ const addDepartment = () => {
 };
 
 const updateEmployee = () => {
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "updateE",
-        message: "Which employee would you like to update?",
-        choices: eArr,
-      },
-    ])
-    .then((response) => {
-      const updateEmp = response.updateE;
-      db.query(
-        `SELECT id, CONCAT(first_name, " ", last_name) AS employee FROM employees`,
-        (err, res) => {
-          if (err) throw err;
-          let resCount = 0;
-          let eArr = [];
-          for (let i = resCount; i < res.length; i++) {
-            let employeeList = {
-              name: res[i].employee,
-              value: res[i].id,
-            };
-            resCount++;
-            eArr.push(employeeList);
-          }
-          inquirer
-            .prompt([
-              {
-                type: "list",
-                name: "rolesList",
-                message: "whats your employees new role?",
-                choices: rolesArr,
-              },
-            ])
-            .then((response) => {
-              const newERole = response.rolesList;
-              db.query(
-                `UPDATE employees SET role_id = ${newERole} WHERE id = ${updateEmp}`,
-                (err, res) => {
-                  if (err) throw err;
-                }
-              );
-            });
-        }
-      );
-    });
+  db.query(
+    `SELECT id, CONCAT(first_name, " ", last_name) AS employee FROM employees`,
+    (err, res) => {
+      if (err) throw err;
+      let resCount = 0;
+      let eArr = [];
+      for (let i = resCount; i < res.length; i++) {
+        let employeeList = {
+          name: res[i].employee,
+          value: res[i].id,
+        };
+        resCount++;
+        eArr.push(employeeList);
+      }
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "updateE",
+            message: "Which employee would you like to update?",
+            choices: eArr,
+          },
+        ])
+        .then((response) => {
+          const updateEmp = response.updateE;
+          db.query(`SELECT job_title, id FROM roles`, (err, res) => {
+            if (err) throw err;
+            let resCount = 0;
+            let rolesArray = [];
+            for (let i = resCount; i < res.length; i++) {
+              let rList = {
+                name: res[i].job_title,
+                value: res[i].id,
+              };
+              resCount++;
+              rolesArray.push(rList);
+            }
+
+            inquirer
+              .prompt([
+                {
+                  type: "list",
+                  name: "rList",
+                  message: "whats your employees new role?",
+                  choices: rolesArray,
+                },
+              ])
+              .then((response) => {
+                const newERole = response.rList;
+                db.query(
+                  `UPDATE employees SET role_id = ${newERole} WHERE id = ${updateEmp}`,
+                  (err, res) => {
+                    if (err) throw err;
+                  }
+                );
+                startPrompt();
+              });
+          });
+        });
+    }
+  );
 };
