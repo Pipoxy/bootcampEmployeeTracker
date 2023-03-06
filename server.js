@@ -18,3 +18,20 @@ const db = mysql.createConnection(
   },
   console.log(`Connected to the employee_db database.`)
 );
+
+const questions = [
+  {
+    type: "list",
+    name: "questions",
+    message: "What would you like to do?",
+    choices: [
+      "view all employees",
+      "view all roles",
+      "view all departments",
+      "add an employee",
+      "add a role",
+      "add a department",
+      "update employee role",
+    ],
+  },
+];
