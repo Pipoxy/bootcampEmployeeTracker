@@ -35,3 +35,59 @@ const questions = [
     ],
   },
 ];
+
+function startPrompt() {
+  inquirer.prompt(questions).then((response) => {
+    if (response.questions === "view all employees") {
+      showEmployees();
+    }
+    if (response.questions === "view all roles") {
+      showRoles();
+    }
+    if (response.questions === "view all departments") {
+      showDepartments();
+    }
+    if (response.questions === "add an employee") {
+      addEmployee();
+    }
+    if (response.questions === "add a role") {
+      addRole();
+    }
+    if (response.questions === "add a department") {
+      addDepartment();
+    }
+    if (response.questions === "update employee role") {
+      updateEmployee();
+    }
+  });
+}
+
+startPrompt();
+
+const showEmployees = () => {
+  db.query(`SELECT * FROM employees`, (err, results) => {
+    console.log("hello world");
+    console.table(results);
+    startPrompt();
+  });
+};
+const showRoles = () => {
+  db.query(`SELECT * FROM roles`, (err, results) => {
+    console.log("hello world");
+    console.table(results);
+    startPrompt();
+  });
+};
+
+const showDepartments = async () => {
+  db.query(`SELECT * FROM departments`, (err, results) => {
+    console.log("hello world");
+    console.table(results);
+    startPrompt();
+  });
+};
+
+const addEmployee = () => {};
+const addRole = () => {};
+const addDepartment = () => {};
+const updateEmployee = () => {};
