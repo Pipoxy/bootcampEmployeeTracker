@@ -79,7 +79,7 @@ const showRoles = () => {
   });
 };
 
-const showDepartments = async () => {
+const showDepartments = () => {
   db.query(`SELECT * FROM departments`, (err, results) => {
     console.log("hello world");
     console.table(results);
@@ -88,6 +88,16 @@ const showDepartments = async () => {
 };
 
 const addEmployee = () => {};
+
 const addRole = () => {};
-const addDepartment = () => {};
+
+const addDepartment = () => {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "addDept",
+      message: "What department would you like to add?",
+    },
+  ]);
+};
 const updateEmployee = () => {};
